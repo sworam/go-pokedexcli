@@ -3,51 +3,27 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/sworam/go-pokedexcli/internal/pokecache"
 	"os"
 	"strings"
+	"time"
 )
-
-type cliCommand struct {
-	name        string
-	description string
-	callback    func(c *config) error
-}
 
 type config struct {
 	next     string
 	previous string
+	cache    pokecache.Cache
 }
 
 var commandRegistry = map[string]cliCommand{}
-
-func registerCommands() {
-	commandRegistry["exit"] = cliCommand{
-		name:        "exit",
-		description: "Exit the Pokedex",
-		callback:    commandExit,
-	}
-	commandRegistry["help"] = cliCommand{
-		name:        "help",
-		description: "Displays a help message",
-		callback:    commandHelp,
-	}
-	commandRegistry["map"] = cliCommand{
-		name:        "map",
-		description: "Displays the current location",
-		callback:    commandMap,
-	}
-	commandRegistry["mapb"] = cliCommand{
-		name:        "mapb",
-		description: "Display the previous location",
-		callback:    commandMapb,
-	}
-}
 
 func main() {
 	registerCommands()
 	fmt.Println("Welcome to the Pokedex!")
 	scanner := bufio.NewScanner(os.Stdin)
-	var conf config
+	conf := config{
+		cache: pokecache.NewCache(time.Second * 5),
+	}
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()

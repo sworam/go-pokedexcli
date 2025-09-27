@@ -2,9 +2,37 @@ package main
 
 import (
 	"fmt"
-	"github.com/sworam/go-pokedexcli/internal/pokeapi"
 	"os"
 )
+
+type cliCommand struct {
+	name        string
+	description string
+	callback    func(c *config) error
+}
+
+func registerCommands() {
+	commandRegistry["exit"] = cliCommand{
+		name:        "exit",
+		description: "Exit the Pokedex",
+		callback:    commandExit,
+	}
+	commandRegistry["help"] = cliCommand{
+		name:        "help",
+		description: "Displays a help message",
+		callback:    commandHelp,
+	}
+	commandRegistry["map"] = cliCommand{
+		name:        "map",
+		description: "Displays the current location",
+		callback:    commandMap,
+	}
+	commandRegistry["mapb"] = cliCommand{
+		name:        "mapb",
+		description: "Display the previous location",
+		callback:    commandMapb,
+	}
+}
 
 func commandExit(c *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
@@ -19,38 +47,4 @@ func commandHelp(c *config) error {
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	return nil
-}
-
-func commandMap(c *config) error {
-	location, err := pokeapi.GetLocation(c.next)
-	if err != nil {
-		return err
-	}
-	displayLocation(location)
-	c.next = location.Next
-	c.previous = location.Previous
-	return nil
-}
-
-func commandMapb(c *config) error {
-	if c.previous == "" {
-		fmt.Println("you're on the first page")
-		return nil
-	}
-
-	location, err := pokeapi.GetLocation(c.previous)
-	if err != nil {
-		return err
-	}
-
-	displayLocation(location)
-	c.next = location.Next
-	c.previous = location.Previous
-	return nil
-}
-
-func displayLocation(location pokeapi.Location) {
-	for _, result := range location.Results {
-		fmt.Println(result.Name)
-	}
 }
