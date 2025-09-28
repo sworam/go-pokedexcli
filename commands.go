@@ -37,6 +37,11 @@ func registerCommands() {
 		description: "Display all pokemon at a given location",
 		callback:    commandExplore,
 	}
+	commandRegistry["catch"] = cliCommand{
+		name:        "catch",
+		description: "Try to catch a pokemon with the given name",
+		callback:    commandCatch,
+	}
 }
 
 func commandExit(c *config, a ...string) error {

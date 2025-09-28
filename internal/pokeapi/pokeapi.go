@@ -9,6 +9,17 @@ import (
 	"github.com/sworam/go-pokedexcli/internal/pokecache"
 )
 
+func GetPokemon(pokemonName string, cache *pokecache.Cache) (Pokemon, error) {
+	finalURL := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", pokemonName)
+	var pokemon Pokemon
+
+	err := getFromCacheOrRequest(finalURL, cache, &pokemon)
+	if err != nil {
+		return Pokemon{}, nil
+	}
+	return pokemon, nil
+}
+
 func GetDetailedLocation(locName string, cache *pokecache.Cache) (DetailedLocation, error) {
 	finalURL := fmt.Sprintf("https://pokeapi.co/api/v2/location-area/%s", locName)
 	var location DetailedLocation

@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/sworam/go-pokedexcli/internal/pokeapi"
 	"github.com/sworam/go-pokedexcli/internal/pokecache"
 	"os"
 	"strings"
@@ -13,6 +14,7 @@ type config struct {
 	next     string
 	previous string
 	cache    pokecache.Cache
+	pokedex  []pokeapi.Pokemon
 }
 
 var commandRegistry = map[string]cliCommand{}
