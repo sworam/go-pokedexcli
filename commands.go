@@ -8,7 +8,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(c *config) error
+	callback    func(c *config, a ...string) error
 }
 
 func registerCommands() {
@@ -32,15 +32,20 @@ func registerCommands() {
 		description: "Display the previous location",
 		callback:    commandMapb,
 	}
+	commandRegistry["explore"] = cliCommand{
+		name:        "explore",
+		description: "Display all pokemon at a given location",
+		callback:    commandExplore,
+	}
 }
 
-func commandExit(c *config) error {
+func commandExit(c *config, a ...string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(c *config) error {
+func commandHelp(c *config, a ...string) error {
 	fmt.Print("Usage:\n\n")
 
 	for _, command := range commandRegistry {

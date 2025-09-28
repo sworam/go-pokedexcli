@@ -9,41 +9,46 @@ import (
 	"github.com/sworam/go-pokedexcli/internal/pokecache"
 )
 
-type Location struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
+func GetDetailedLocation(locName string, cache *pokecache.Cache) (DetailedLocation, error) {
+	finalURL := fmt.Sprintf("https://pokeapi.co/api/v2/location-area/%s", locName)
+	var location DetailedLocation
+
+	err := getFromCacheOrRequest(finalURL, cache, &location)
+	if err != nil {
+		return DetailedLocation{}, err
+	}
+	return location, nil
 }
 
-func GetLocation(url string, cache pokecache.Cache) (Location, error) {
+func GetLocation(url string, cache *pokecache.Cache) (Location, error) {
 	var finalURL = "https://pokeapi.co/api/v2/location-area"
 	if url != "" {
 		finalURL = url
 	}
 
-	data, ok := cache.Get(finalURL)
-	var location Location
-	if !ok {
-		data, err := getHTTPLocation(finalURL)
-		if err != nil {
-			return Location{}, err
-		}
-		cache.Add(finalURL, data)
-	}
-	data, _ = cache.Get(finalURL)
-	err := json.Unmarshal(data, &location)
+	var location = Location{}
+	err := getFromCacheOrRequest(finalURL, cache, &location)
 	if err != nil {
 		return Location{}, err
 	}
-	fmt.Println(location.Next)
 	return location, nil
 }
 
-func getHTTPLocation(url string) ([]byte, error) {
+func getFromCacheOrRequest(url string, cache *pokecache.Cache, v any) error {
+	data, ok := cache.Get(url)
+	if !ok {
+		data, err := makeGETRequest(url)
+		if err != nil {
+			return err
+		}
+		cache.Add(url, data)
+	}
+	data, _ = cache.Get(url)
+	err := json.Unmarshal(data, &v)
+	return err
+}
+
+func makeGETRequest(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("Connection Error")

@@ -34,7 +34,7 @@ func main() {
 		if !ok {
 			fmt.Println("Unknown command")
 		} else {
-			c.callback(&conf)
+			c.callback(&conf, cleaned[1:]...)
 		}
 	}
 }

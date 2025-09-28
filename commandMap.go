@@ -5,8 +5,8 @@ import (
 	"github.com/sworam/go-pokedexcli/internal/pokeapi"
 )
 
-func commandMap(c *config) error {
-	location, err := pokeapi.GetLocation(c.next, c.cache)
+func commandMap(c *config, a ...string) error {
+	location, err := pokeapi.GetLocation(c.next, &c.cache)
 	if err != nil {
 		return err
 	}
@@ -16,13 +16,13 @@ func commandMap(c *config) error {
 	return nil
 }
 
-func commandMapb(c *config) error {
+func commandMapb(c *config, a ...string) error {
 	if c.previous == "" {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	location, err := pokeapi.GetLocation(c.previous, c.cache)
+	location, err := pokeapi.GetLocation(c.previous, &c.cache)
 	if err != nil {
 		return err
 	}
