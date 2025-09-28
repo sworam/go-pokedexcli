@@ -17,8 +17,6 @@ type config struct {
 	pokedex  map[string]pokeapi.Pokemon
 }
 
-var commandRegistry = map[string]cliCommand{}
-
 func main() {
 	registerCommands()
 	fmt.Println("Welcome to the Pokedex!")

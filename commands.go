@@ -11,6 +11,8 @@ type cliCommand struct {
 	callback    func(c *config, a ...string) error
 }
 
+var commandRegistry = map[string]cliCommand{}
+
 func registerCommands() {
 	commandRegistry["exit"] = cliCommand{
 		name:        "exit",
@@ -50,7 +52,7 @@ func registerCommands() {
 	commandRegistry["pokedex"] = cliCommand{
 		name:        "pokedex",
 		description: "Inspect your current pokedex",
-		callback:    commandPokedex,
+		callback:    commandInspect,
 	}
 }
 
