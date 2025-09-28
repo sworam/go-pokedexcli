@@ -17,11 +17,12 @@ func commandCatch(c *config, a ...string) error {
 }
 
 func tryToCatchPokemon(c *config, pokemon pokeapi.Pokemon) {
+	fmt.Printf("Throwing a Pokeball at %s\n", pokemon.Name)
 	catchRate := calcCatchRate(pokemon)
 
 	if rand.Float64() <= catchRate {
 		fmt.Printf("Caught '%s'\n", pokemon.Name)
-		c.pokedex = append(c.pokedex, pokemon)
+		c.pokedex[pokemon.Name] = pokemon
 	} else {
 		fmt.Printf("'%s' escaped!\n", pokemon.Name)
 	}

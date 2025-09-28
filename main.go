@@ -14,7 +14,7 @@ type config struct {
 	next     string
 	previous string
 	cache    pokecache.Cache
-	pokedex  []pokeapi.Pokemon
+	pokedex  map[string]pokeapi.Pokemon
 }
 
 var commandRegistry = map[string]cliCommand{}
@@ -24,7 +24,8 @@ func main() {
 	fmt.Println("Welcome to the Pokedex!")
 	scanner := bufio.NewScanner(os.Stdin)
 	conf := config{
-		cache: pokecache.NewCache(time.Second * 5),
+		cache:   pokecache.NewCache(time.Second * 5),
+		pokedex: make(map[string]pokeapi.Pokemon),
 	}
 	for {
 		fmt.Print("Pokedex > ")
